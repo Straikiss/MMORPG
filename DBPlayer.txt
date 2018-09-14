@@ -1,0 +1,6 @@
+Player.Nickname = Hesoid
+Player.Health = 500
+Player.Might = 100
+Player.Defence = 50
+Player.CritChance = 2
+Player.CritBonus = 2
