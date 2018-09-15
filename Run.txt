@@ -1,0 +1,1 @@
+BattleSpeed = 300
