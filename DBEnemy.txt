@@ -1,6 +1,7 @@
 Enemy.Nickname = Straikiss
-Enemy.Health = 500
-Enemy.Might = 100
-Enemy.Defence = 0
+Enemy.Health = 1500
+Enemy.Might = 150
+Enemy.Defence = 25
 Enemy.CritChance = 2
 Enemy.CritBonus = 2
+Enemy.Regen = 30
