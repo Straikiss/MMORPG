@@ -1,1 +1,2 @@
 BattleSpeed = 300
+ShowFullLog = false
