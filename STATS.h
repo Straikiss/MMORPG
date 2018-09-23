@@ -5,7 +5,7 @@
 
 struct Stats
 {
-	string Nickname;
+	std::string Nickname;
 	int Health;
 	int Might;
 	double Defence;
