@@ -3,364 +3,269 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+using std::cout;
+using std::endl;
+
 void MAIN()
 {
 	int EXIT = 0;
 	int MightMinusDefence;
 
 	// Setup player configs
-	PlayerSetup();
+	SetupPlayer();
 
 	// Setup enemy configs
-	EnemySetup();
+	SetupEnemy();
 
-	// Getting GetShowFullLog from Run
-	string FakeGetBattleSpeed;
-	string GetShowFullLog;
+	// Getting ShowFullLog from Run
+	std::string FakeSetBattleSpeed;
+	std::string ShowFullLog;
 
-	// Reading GetShowFullLog from Run
-	ofstream Run;
-	ifstream ReadFromRun("Run.txt");
-	getline(ReadFromRun, FakeGetBattleSpeed);
-	getline(ReadFromRun, GetShowFullLog);
+	// Reading ShowFullLog from Run
+	std::ofstream Run;
+	std::ifstream ReadFromRun("Run.txt");
+	std::getline(ReadFromRun, FakeSetBattleSpeed);
+	getline(ReadFromRun, ShowFullLog);
 	Run.close();
 
 	// Read only after =
-	GetShowFullLog.erase(0, 14);
+	ShowFullLog.erase(0, 14);
 
 	while(EXIT == 0)
 	{
-		srand(time(0));
-		Player.Crit = (rand() % Player.CritChance);
-		Enemy.Crit = (rand() % Enemy.CritChance);
-
-		//Player.Dodge = (rand() % Player.DodgeChange);
+		srand(time(NULL));
+		Player.Crit = rand() % Player.CritChance;
+		Enemy.Crit = rand() % Enemy.CritChance;
+		Player.Dodge = rand() % Player.DodgeChange;
+		Enemy.Dodge = rand() % Enemy.DodgeChange;
 
 		// While Player.Health is more than 0 we're fighting 
-		if(Player.Health > 0)
+		if(Player.Health > 0 && Enemy.Dodge != 0)
 		{
-			// If Enemy.Defence is more than 0 then Enemy.Health minus (Player.Might minus Enemy.Defence)
-			if(Enemy.Defence > 0)
+			// Save Player.Might for reset
+			Player.ResetMight = Player.Might;
+
+			DisplaySleep();
+			cout << endl;
+
+			// If rand() got 0 it'll have crit
+			if(Player.Crit == 0)
 			{
-				// Save Player.Might for reset
-				Player.ResetMight = Player.Might;
+				// Setting Player.CritMight
+				Player.CritMight = Player.Might * Player.CritBonus;
+				cout << "[" << Player.Nickname << "]" << " CritMight: " << Player.CritMight << endl;
+			}
 
-				// If rand() got 0 it'll have crit
-				if(Player.Crit == 0)
+			// If rand() didn't get 0 it won't have crit
+			else
+			{
+				// Setting Player.CritMight
+				Player.CritMight = 0;
+				cout << "[" << Player.Nickname << "]" << " Might: " << Player.Might << endl;
+			}
+
+			cout << "[" << Player.Nickname << "]" << " Enemy.Health before attacked: " << Enemy.Health << endl;
+
+			// Getting % by Enemy.Defence
+			double MinusDefence = Enemy.Defence / 100;
+
+			if(ShowFullLog == "true")
+			{
+				cout << "[" << Player.Nickname << "]" << " Enemy.Defence: " << Enemy.Defence << "%" << endl;
+			}
+
+			if(Player.Crit == 0)
+			{
+				// Calc Player.CritMight after Enemy.Defence
+				MightMinusDefence = Player.CritMight * MinusDefence;
+
+				// Player.CritMight after Enemy.Defence
+				Player.CritMight -= MightMinusDefence;
+
+				if(ShowFullLog == "true")
 				{
-					DisplaySleep();
-					cout << endl;
+					cout << "[" << Player.Nickname << "]" << " CritMight after Enemy.Defence: " << Player.CritMight << endl;
+				}
+				
+				Enemy.Health -= Player.CritMight;
+			}
 
-					// Calc Player.CritMight
-					Player.CritMight = Player.Might * Player.CritBonus;
-					cout << "[" << Player.Nickname << "]" << " CritMight: " << Player.CritMight << endl;
+			// If we didn't get crit
+			else
+			{
+				// Calc Player.Might after Enemy.Defence
+				MightMinusDefence = Player.Might * MinusDefence;
+
+				// Player.Might after Enemy.Defence
+				Player.Might -= MightMinusDefence;
+
+				if(ShowFullLog == "true")
+				{
+					cout << "[" << Player.Nickname << "]" << " Might after Enemy.Defence: " << Player.Might << endl;
 				}
 
-				// If rand() didn't get 0 it won't have crit
-				else
-				{
-					DisplaySleep();
-					cout << endl;
-					Player.CritMight = 0;
-					cout << "[" << Player.Nickname << "]" << " Might: " << Player.Might << endl;
-				}
+				Enemy.Health -= Player.Might;
+			}
 
-				cout << "[" << Player.Nickname << "]" << " Enemy.Health before attacked: " << Enemy.Health << endl;
+			// If Enemy.Health == 0 we won
+			if(Enemy.Health <= 0)
+			{
+				EXIT = 1;
+				Enemy.Health = 0;
+			}
 
-				// Getting % by Enemy.Defence
-				double MinusDefence = Enemy.Defence / 100;
+			// Reset Player.Might to default
+			Player.Might = Player.ResetMight;
 
-				if(GetShowFullLog == "true")
-				{
-					cout << "[" << Player.Nickname << "]" << " Enemy.Defence: " << Enemy.Defence << "%" << endl;
-				}
+			cout << "[" << Player.Nickname << "]" << " Enemy.Health after attacked: " << Enemy.Health << endl;
 
-				if(Player.Crit == 0)
-				{
-					// Calc Player.CritMight after Enemy.Defence
-					MightMinusDefence = Player.CritMight * MinusDefence;
-
-					// Player.CritMight after Enemy.Defence
-					Player.CritMight -= MightMinusDefence;
-
-					if(GetShowFullLog == "true")
-					{
-						cout << "[" << Player.Nickname << "]" << " CritMight after Enemy.Defence: " << Player.CritMight << endl;
-					}
-
-					Enemy.Health -= Player.CritMight;
-				}
-
-				// If we didn't get crit
-				else
-				{
-					// Calc Player.Might after Enemy.Defence
-					MightMinusDefence = Player.Might * MinusDefence;
-
-					// Player.Might after Enemy.Defence
-					Player.Might -= MightMinusDefence;
-
-					if(GetShowFullLog == "true")
-					{
-						cout << "[" << Player.Nickname << "]" << " Might after Enemy.Defence: " << Player.Might << endl;
-					}
-
-					Enemy.Health -= Player.Might;
-				}
-
-				// If Enemy.Health is 0 we won
-				if(Enemy.Health <= 0)
-				{
-					EXIT = 1;
-					Enemy.Health = 0;
-				}
-
-				// Reset Player.Might to default
-				Player.Might = Player.ResetMight;
-
-				cout << "[" << Player.Nickname << "]" << " Enemy.Health after attacked: " << Enemy.Health << endl;
-
-				// Regen
-				if(Enemy.Health != 0 && GetShowFullLog == "true")
+			// Regen
+			if(Enemy.Health != 0 && Enemy.Dodge != 0)
+			{
+				if(ShowFullLog == "true")
 				{
 					cout << "[" << Player.Nickname << "]" << " Enemy.Health before regened: " << Enemy.Health << endl;
 					cout << "[" << Player.Nickname << "]" << " Enemy.Regen: " << Enemy.Regen << endl;
-					Enemy.Health += Enemy.Regen;
+				}
+
+				Enemy.Health += Enemy.Regen;
+
+				if(ShowFullLog == "true")
+				{
 					cout << "[" << Player.Nickname << "]" << " Enemy.Health after regened: " << Enemy.Health << endl;
 				}
 			}
+		}
 
-			// If Enemy.Defence is 0 then Enemy.Health minus Player.Might
-			if(Enemy.Defence == 0)
-			{
-				// Save Player.Might for reset
-				Player.ResetMight = Player.Might;
-
-				if (Player.Crit == 0)
-				{
-					DisplaySleep();
-					cout << endl;
-
-					// Calc Player.CritMight
-					Player.CritMight = Player.Might * Player.CritBonus;
-					cout << "[" << Player.Nickname << "]" << " CritMight: " << Player.CritMight << endl;
-				}
-				else
-				{
-					DisplaySleep();
-					cout << endl;
-					Player.CritMight = 0;
-					cout << "[" << Player.Nickname << "]" << " Might: " << Player.Might << endl;
-				}
-
-				cout << "[" << Player.Nickname << "]" << " Enemy.Health before attacked: " << Enemy.Health << endl;
-
-				if(Player.Crit == 0)
-				{
-					Enemy.Health -= Player.CritMight;
-				}
-
-				// If we didn't get crit
-				else
-				{
-					Enemy.Health -= Player.Might;
-				}
-
-				// If Enemy.Health is 0 we won
-				if(Enemy.Health <= 0)
-				{
-					EXIT = 1;
-					Enemy.Health = 0;
-				}
-
-				// Reset Player.Might to default
-				Player.Might = Player.ResetMight;
-
-				cout << "[" << Player.Nickname << "]" << " Enemy.Health after attacked: " << Enemy.Health << endl;
-
-				// Regen
-				if(Enemy.Health != 0)
-				{
-					cout << "[" << Player.Nickname << "]" << " Enemy.Health before regened: " << Enemy.Health << endl;
-					cout << "[" << Player.Nickname << "]" << " Enemy.Regen: " << Enemy.Regen << endl;
-					Enemy.Health += Enemy.Regen;
-					cout << "[" << Player.Nickname << "]" << " Enemy.Health after regened: " << Enemy.Health << endl;
-				}
-			}
+		// If Enemy.Dodge == 0
+		else
+		{
+			cout << endl;
+			cout << "[" << Player.Nickname << "]" << " Enemy.Dodge" << endl;
 		}
 
 		// While Enemy.Health is more than 0 we're fighting 
-		if (Enemy.Health > 0)
-		{
-			// If Player.Defence is more than 0 then Player.Health minus (Enemy.Might minus Player.Defence)
-			if(Player.Defence > 0)
+		if(Enemy.Health > 0 && Player.Dodge != 0)
+		{	
+			// Save Enemy.Might for reset
+			Enemy.ResetMight = Enemy.Might;
+
+			DisplaySleep();
+			cout << endl;
+
+			// If rand() == 0 it'll have crit
+			if(Enemy.Crit == 0)
 			{
-				// Save Enemy.Might for reset
-				Enemy.ResetMight = Enemy.Might;
-
-				// If rand() got 0 it'll have crit
-				if(Enemy.Crit == 0)
-				{
-					DisplaySleep();
-					cout << endl;
-
-					// Calc Enemy.CritMight
-					Enemy.CritMight = Enemy.Might * Enemy.CritBonus;
-					cout << "[" << Enemy.Nickname << "]" << " CritMight: " << Enemy.CritMight << endl;
-				}
-
-				// If rand() didn't get 0 it won't have crit
-				else
-				{
-					DisplaySleep();
-					cout << endl;
-					Enemy.CritMight = 0;
-					cout << "[" << Enemy.Nickname << "]" << " Might: " << Enemy.Might << endl;
-				}
-
-				cout << "[" << Enemy.Nickname << "]" << " Player.Health before attacked: " << Player.Health << endl;
-
-				// Getting % by player.Defence 
-				double MinusDefence = Player.Defence / 100;
-
-				if(GetShowFullLog == "true")
-				{
-					cout << "[" << Enemy.Nickname << "]" << " Player.Defence: " << Player.Defence << "%" << endl;
-				}
-
-				if(Enemy.Crit == 0)
-				{
-					// Calc Enemy.CritMight after Player.Defence
-					MightMinusDefence = Enemy.CritMight * MinusDefence;
-
-					// Enemy.CritMight after player.Defence
-					Enemy.CritMight -= MightMinusDefence;
-
-					if (GetShowFullLog == "true")
-					{
-						cout << "[" << Enemy.Nickname << "]" << " CritMight after player.Defence: " << Enemy.CritMight << endl;
-					}
-
-					Player.Health -= Enemy.CritMight;
-				}
-				else
-				{
-					// Calc Enemy.Might after Player.Defence
-					MightMinusDefence = Enemy.Might * MinusDefence;
-
-					// Enemy.Might after Player.Defence
-					Enemy.Might -= MightMinusDefence;
-
-					if (GetShowFullLog == "true")
-					{
-						cout << "[" << Enemy.Nickname << "]" << " Might after Player.Defence: " << Enemy.Might << endl;
-					}
-
-					Player.Health -= Enemy.Might;
-				}
-
-				// If Player.Health is 0 we won
-				if(Player.Health <= 0)
-				{
-					EXIT = 1;
-					Player.Health = 0;
-				}
-
-				// Reset Enemy.Might to default
-				Enemy.Might = Enemy.ResetMight;
-
-				cout << "[" << Enemy.Nickname << "]" << " Player.Health after attacked: " << Player.Health << endl;
-
-				// Regen
-				if(Player.Health != 0 && GetShowFullLog == "true")
-				{
-					cout << "[" << Enemy.Nickname << "]" << " Player.Health before regened: " << Player.Health << endl;
-					cout << "[" << Enemy.Nickname << "]" << " Player.Regen: " << Player.Regen << endl;
-					Player.Health += Player.Regen;
-					cout << "[" << Enemy.Nickname << "]" << " Player.Health after regened: " << Player.Health << endl;
-				}
+				// Setting Enemy.CritMight
+				Enemy.CritMight = Enemy.Might * Enemy.CritBonus;
+				cout << "[" << Enemy.Nickname << "]" << " CritMight: " << Enemy.CritMight << endl;
 			}
 
-			// If Enemy.Defence is 0 then Enemy.Health minus Player.Might
-			if(Enemy.Defence == 0)
+			// If rand() != 0 it won't have crit
+			else
 			{
-				// Save Enemy.Might for reset
-				Enemy.ResetMight = Enemy.Might;
+				// Setting Enemy.CritMight
+				Enemy.CritMight = 0;
+				cout << "[" << Enemy.Nickname << "]" << " Might: " << Enemy.Might << endl;
+			}
 
-				if(Enemy.Crit == 0)
+			cout << "[" << Enemy.Nickname << "]" << " Player.Health before attacked: " << Player.Health << endl;
+
+			// Getting % by player.Defence 
+			double MinusDefence = Player.Defence / 100;
+
+			if(ShowFullLog == "true")
+			{
+				cout << "[" << Enemy.Nickname << "]" << " Player.Defence: " << Player.Defence << "%" << endl;
+			}
+
+			if(Enemy.Crit == 0)
+			{
+				// Calc Enemy.CritMight after Player.Defence
+				MightMinusDefence = Enemy.CritMight * MinusDefence;
+
+				// Enemy.CritMight after player.Defence
+				Enemy.CritMight -= MightMinusDefence;
+
+				if(ShowFullLog == "true")
 				{
-					DisplaySleep();
-					cout << endl;
-
-					// Calc Enemy.CritMight
-					Enemy.CritMight = Enemy.Might * Enemy.CritBonus;
-					cout << "[" << Enemy.Nickname << "]" << " CritMight: " << Enemy.CritMight << endl;
-				}
-				else
-				{
-					DisplaySleep();
-					cout << endl;
-					Enemy.CritMight = 0;
-					cout << "[" << Enemy.Nickname << "]" << " Might: " << Enemy.Might << endl;
-				}
-
-				cout << "[" << Enemy.Nickname << "]" << " Player.Health before attacked: " << Player.Health << endl;
-
-				if(Enemy.Crit == 0)
-				{
-					Player.Health -= Enemy.CritMight;
-				}
-
-				// If we didn't get crit
-				else
-				{
-					Player.Health -= Enemy.Might;
+					cout << "[" << Enemy.Nickname << "]" << " CritMight after player.Defence: " << Enemy.CritMight << endl;
 				}
 
-				// If Enemy.Health is 0 we won
-				if(Player.Health <= 0)
+				Player.Health -= Enemy.CritMight;
+			}
+			else
+			{
+				// Calc Enemy.Might after Player.Defence
+				MightMinusDefence = Enemy.Might * MinusDefence;
+
+				// Enemy.Might after Player.Defence
+				Enemy.Might -= MightMinusDefence;
+
+				if(ShowFullLog == "true")
 				{
-					EXIT = 1;
-					Player.Health = 0;
+					cout << "[" << Enemy.Nickname << "]" << " Might after Player.Defence: " << Enemy.Might << endl;
 				}
 
-				// Reset Enemy.Might to default
-				Enemy.Might = Enemy.ResetMight;
+				Player.Health -= Enemy.Might;
+			}
 
-				cout << "[" << Enemy.Nickname << "]" << " Player.Health after attacked: " << Player.Health << endl;
+			// If Player.Health == 0 we won
+			if(Player.Health <= 0)
+			{
+				EXIT = 1;
+				Player.Health = 0;
+			}
 
-				// Regen
-				if(Player.Health != 0)
+			// Reset Enemy.Might to default
+			Enemy.Might = Enemy.ResetMight;
+
+			cout << "[" << Enemy.Nickname << "]" << " Player.Health after attacked: " << Player.Health << endl;
+
+			// Regen
+			if(Player.Health != 0 && Player.Dodge != 0)
+			{
+				if(ShowFullLog == "true")
 				{
 					cout << "[" << Enemy.Nickname << "]" << " Player.Health before regened: " << Player.Health << endl;
 					cout << "[" << Enemy.Nickname << "]" << " Player.Regen: " << Player.Regen << endl;
-					Player.Health += Player.Regen;
+				}
+
+				Player.Health += Player.Regen;
+
+				if(ShowFullLog == "true")
+				{
 					cout << "[" << Enemy.Nickname << "]" << " Player.Health after regened: " << Player.Health << endl;
 				}
 			}
 		}
-		
+
+		// If Player.Dodge == 0
+		else
+		{
+			cout << endl;
+			cout << "[" << Enemy.Nickname << "]" << " Player.Dodge" << endl;
+		}
 	}
 
-	// Only when Player.Health is more than Enemy.Health we'll win
+	DisplaySleep();
+	cout << endl;
+
+	// If Player.Health > Enemy.Health then victory
 	if(Player.Health > Enemy.Health)
 	{
-		DisplaySleep();
-		cout << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
+		SetConsoleColor("Green");
 		cout << "[GAME] Victory" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+		SetConsoleColor("Black");
 		cout << "[GAME] " << Player.Nickname << " is alive with " << Player.Health << " Health" << endl << endl;
 	}
 
-	// If Player.Health is 0 or Player.Health is 0 and Enemy.Health is 0 we won't win
+	// If Player.Health < Enemy.Health then defeat
 	if(Player.Health < Enemy.Health)
 	{
-		DisplaySleep();
-		cout << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
+		SetConsoleColor("Red");
 		cout << "[GAME] Defeat" << endl;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+		SetConsoleColor("Black");
 		cout << "[GAME] " << Enemy.Nickname << " is alive with " << Enemy.Health << " Health" << endl << endl;
 	}
 }
