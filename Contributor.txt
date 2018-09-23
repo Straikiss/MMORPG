@@ -1,0 +1,4 @@
+# This file contains a list of people who've made the program.
+
+[Developer] Straikiss <starko.web@gmail.com>
+[Tester] Fire_mn_29 <vin293@mail.ru>
