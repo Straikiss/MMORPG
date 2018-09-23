@@ -3,70 +3,87 @@
 #ifndef _SetupPlayer_H_
 #define _SetupPlayer_H_
 
-void PlayerSetup()
+using std::string;
+using std::istringstream;
+
+void SetupPlayer()
 {
 	// Getting Player.Stats from DBPlayer
-	string GetPlayerNickname;
-	string GetPlayerHealth;
-	string GetPlayerMight;
-	string GetPlayerDefence;
-	string GetPlayerCritChance;
-	string GetPlayerCritBonus;
-	string GetPlayerRegen;
+	string PlayerNickname;
+	string PlayerHealth;
+	string PlayerMight;
+	string PlayerDefence;
+	string PlayerCritChance;
+	string PlayerCritBonus;
+	string PlayerRegen;
+	string PlayerDodgeChange;
 
 	// Reading Player.Stats from DBPlayer
-	ofstream DBPlayer;
-	ifstream ReadFromDBPlayer("DBPlayer.txt");
-	getline(ReadFromDBPlayer, GetPlayerNickname);
-	getline(ReadFromDBPlayer, GetPlayerHealth);
-	getline(ReadFromDBPlayer, GetPlayerMight);
-	getline(ReadFromDBPlayer, GetPlayerDefence);
-	getline(ReadFromDBPlayer, GetPlayerCritChance);
-	getline(ReadFromDBPlayer, GetPlayerCritBonus);
-	getline(ReadFromDBPlayer, GetPlayerRegen);
+	std::ofstream DBPlayer;
+	std::ifstream ReadFromDBPlayer("DBPlayer.txt");
+	std::getline(ReadFromDBPlayer, PlayerNickname);
+	getline(ReadFromDBPlayer, PlayerHealth);
+	getline(ReadFromDBPlayer, PlayerMight);
+	getline(ReadFromDBPlayer, PlayerDefence);
+	getline(ReadFromDBPlayer, PlayerCritChance);
+	getline(ReadFromDBPlayer, PlayerCritBonus);
+	getline(ReadFromDBPlayer, PlayerRegen);
+	getline(ReadFromDBPlayer, PlayerDodgeChange);
 	DBPlayer.close();
 
 	// Read only after =
-	GetPlayerNickname.erase(0, 18);
-	GetPlayerHealth.erase(0, 16);
-	GetPlayerMight.erase(0, 15);
-	GetPlayerDefence.erase(0, 17);
-	GetPlayerCritChance.erase(0, 20);
-	GetPlayerCritBonus.erase(0, 19);
-	GetPlayerRegen.erase(0, 15);
+	PlayerNickname.erase(0, 18);
+	PlayerHealth.erase(0, 16);
+	PlayerMight.erase(0, 15);
+	PlayerDefence.erase(0, 17);
+	PlayerCritChance.erase(0, 20);
+	PlayerCritBonus.erase(0, 19);
+	PlayerRegen.erase(0, 15);
+	PlayerDodgeChange.erase(0, 21);
 
 	// Setting stats from DBPlayer to Player.Stats
-	Player.Nickname = GetPlayerNickname;
-	istringstream(GetPlayerHealth) >> Player.Health;
-	istringstream(GetPlayerMight) >> Player.Might;
-	istringstream(GetPlayerDefence) >> Player.Defence;
-	istringstream(GetPlayerCritChance) >> Player.CritChance;
-	istringstream(GetPlayerCritBonus) >> Player.CritBonus;
-	istringstream(GetPlayerRegen) >> Player.Regen;
-	//Player.DodgeChange = 2;
+	Player.Nickname = PlayerNickname;
+	istringstream(PlayerHealth) >> Player.Health;
+	istringstream(PlayerMight) >> Player.Might;
+	istringstream(PlayerDefence) >> Player.Defence;
+	istringstream(PlayerCritChance) >> Player.CritChance;
+	istringstream(PlayerCritBonus) >> Player.CritBonus;
+	istringstream(PlayerRegen) >> Player.Regen;
+	istringstream(PlayerDodgeChange) >> Player.DodgeChange;
 
-	// 1 is min Health
 	if(Player.Health == 0)
 	{
 		Player.Health = 100;
 	}
 
-	// 1 is min CritChance
+	if(Player.Might == 0)
+	{
+		Player.Might = 10;
+	}
+
+	if(Player.Defence == 0)
+	{
+		Player.Defence = 1;
+	}
+
+	if(Player.Defence > 70)
+	{
+		Player.Defence = 70;
+	}
+
 	if(Player.CritChance == 0)
 	{
 		Player.CritChance = 1;
 	}
 
-	// 1 is min CritBonus
 	if(Player.CritBonus == 0)
 	{
 		Player.CritBonus = 1;
 	}
 
-	// 70 - 70% is max
-	if(Player.Defence > 70)
+	if(Player.Regen == 0)
 	{
-		Player.Defence = 70;
+		Player.Regen = 5;
 	}
 }
 
