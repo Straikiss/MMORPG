@@ -1,2 +1,2 @@
-BattleSpeed = 300
-ShowFullLog = false
+BattleSpeed = 0
+ShowFullLog = true
