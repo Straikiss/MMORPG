@@ -10,9 +10,6 @@
 #include <sstream>
 #include <string>
 #include <ctime>
-
-using namespace std;
-
 #include "STATS.h"
 #include "DisplaySleep.h"
 #include "SetupPlayer.h"
