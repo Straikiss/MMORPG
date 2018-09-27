@@ -20,27 +20,45 @@ void MAIN()
 	// Getting ShowFullLog from Run
 	std::string FakeSetBattleSpeed;
 	std::string ShowFullLog;
+	std::string SaveBattleLog;
+	std::string LogFileName;
 
 	// Reading ShowFullLog from Run
 	std::ofstream Run;
 	std::ifstream ReadFromRun("Run.txt");
 	std::getline(ReadFromRun, FakeSetBattleSpeed);
 	getline(ReadFromRun, ShowFullLog);
+	getline(ReadFromRun, SaveBattleLog);
+	getline(ReadFromRun, LogFileName);
 	Run.close();
 
 	// Read only after =
 	ShowFullLog.erase(0, 14);
+	SaveBattleLog.erase(0, 16);
+	LogFileName.erase(0, 14);
+
+	std::ofstream File;
+
+	if(SaveBattleLog == "true")
+	{
+		File.open(LogFileName + ".txt", std::ios_base::app);
+	}
+
+	srand((unsigned int)time(NULL));
 
 	while(EXIT == 0)
 	{
-		srand(time(NULL));
 		Player.Crit = rand() % Player.CritChance;
 		Enemy.Crit = rand() % Enemy.CritChance;
 		Player.Dodge = rand() % Player.DodgeChange;
 		Enemy.Dodge = rand() % Enemy.DodgeChange;
 
+		// Test srand()
+		//std::cout << Player.Dodge << std::endl;
+		//std::cout << Enemy.Dodge << std::endl;
+
 		// While Player.Health is more than 0 we're fighting 
-		if(Player.Health > 0 && Enemy.Dodge != 0)
+		if(Player.Health > 0 && Enemy.Dodge != 0 && Enemy.Health > 0)
 		{
 			// Save Player.Might for reset
 			Player.ResetMight = Player.Might;
@@ -138,14 +156,14 @@ void MAIN()
 		}
 
 		// If Enemy.Dodge == 0
-		else
+		if(Enemy.Dodge == 0 && Player.Health != 0)
 		{
 			cout << endl;
 			cout << "[" << Player.Nickname << "]" << " Enemy.Dodge" << endl;
 		}
 
 		// While Enemy.Health is more than 0 we're fighting 
-		if(Enemy.Health > 0 && Player.Dodge != 0)
+		if(Enemy.Health > 0 && Player.Dodge != 0 && Player.Health > 0)
 		{	
 			// Save Enemy.Might for reset
 			Enemy.ResetMight = Enemy.Might;
@@ -241,7 +259,7 @@ void MAIN()
 		}
 
 		// If Player.Dodge == 0
-		else
+		if(Player.Dodge == 0 && Enemy.Health != 0)
 		{
 			cout << endl;
 			cout << "[" << Enemy.Nickname << "]" << " Player.Dodge" << endl;
@@ -257,7 +275,18 @@ void MAIN()
 		SetConsoleColor("Green");
 		cout << "[GAME] Victory" << endl;
 		SetConsoleColor("Black");
+
+		if(SaveBattleLog == "true")
+		{
+			File << "[GAME] " << Player.Nickname << " is alive with " << Player.Health << " Health" << endl;
+		}
+
 		cout << "[GAME] " << Player.Nickname << " is alive with " << Player.Health << " Health" << endl << endl;
+
+		if(SaveBattleLog == "true")
+		{
+			cout << "[PROGRAM]" << " BattleLog saved to " << LogFileName << ".txt" << endl << endl;
+		}
 	}
 
 	// If Player.Health < Enemy.Health then defeat
@@ -266,7 +295,18 @@ void MAIN()
 		SetConsoleColor("Red");
 		cout << "[GAME] Defeat" << endl;
 		SetConsoleColor("Black");
+
+		if(SaveBattleLog == "true")
+		{
+			File << "[GAME] " << Enemy.Nickname << " is alive with " << Enemy.Health << " Health" << endl;
+		}
+
 		cout << "[GAME] " << Enemy.Nickname << " is alive with " << Enemy.Health << " Health" << endl << endl;
+
+		if(SaveBattleLog == "true")
+		{
+			cout << "[PROGRAM]" << " BattleLog saved to " << LogFileName << ".txt" << endl << endl;
+		}
 	}
 }
 
