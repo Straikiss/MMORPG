@@ -1,2 +1,4 @@
-BattleSpeed = 0
-ShowFullLog = true
+BattleSpeed = normal
+ShowFullLog = false
+SaveBattleLog = false
+LogFileName = BattleLog
