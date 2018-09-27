@@ -7,7 +7,6 @@ void DisplaySleep()
 {
 	// Getting SetBattleSpeed from Run
 	std::string SetBattleSpeed;
-	int BattleSpeed;
 
 	// Reading SetBattleSpeed from Run
 	std::ofstream Run;
@@ -18,11 +17,21 @@ void DisplaySleep()
 	// Read only after =
 	SetBattleSpeed.erase(0, 14);
 
-	// Setting stats from Run to BattleSpeed
-	std::istringstream(SetBattleSpeed) >> BattleSpeed;
-
 	// Setting battle speed
-	Sleep(BattleSpeed);
+	if(SetBattleSpeed == "fast")
+	{
+		Sleep(0);
+	}
+
+	if(SetBattleSpeed == "normal")
+	{
+		Sleep(500);
+	}
+	
+	if(SetBattleSpeed == "slow")
+	{
+		Sleep(1000);
+	}
 }
 
 void SetConsoleColor(std::string ColorName)
