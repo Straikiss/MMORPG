@@ -4,5 +4,5 @@ Player.Might = 150
 Player.Defence = 25
 Player.CritChance = 4
 Player.CritBonus = 2
-Player.Regen = 10
+Player.Regen = 15
 Player.DodgeChange = 10
