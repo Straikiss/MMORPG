@@ -1,14 +1,9 @@
-#pragma once
-
-#ifndef _SetupEnemy_H_
-#define _SetupEnemy_H_
-
-using std::string;
-using std::istringstream;
+#ifndef _SETUPENEMY_H_
+#define _SETUPENEMY_H
 
 void SetupEnemy()
 {
-	// Getting Enemy.Stats from DBEnemy
+	// getting Enemy.Stats from DBEnemy
 	string EnemyNickname;
 	string EnemyHealth;
 	string EnemyMight;
@@ -17,10 +12,11 @@ void SetupEnemy()
 	string EnemyCritBonus;
 	string EnemyRegen;
 	string EnemyDodgeChange;
+	string EnemyLifesteal;
 
-	// Reading Enemy.Stats from DBEnemy
+	// reading Enemy.Stats from DBEnemy
 	std::ofstream DBEnemy;
-	std::ifstream ReadFromDBEnemy("DBEnemy.txt");
+	std::ifstream ReadFromDBEnemy("Enemy.txt");
 	std::getline(ReadFromDBEnemy, EnemyNickname);
 	getline(ReadFromDBEnemy, EnemyHealth);
 	getline(ReadFromDBEnemy, EnemyMight);
@@ -29,19 +25,21 @@ void SetupEnemy()
 	getline(ReadFromDBEnemy, EnemyCritBonus);
 	getline(ReadFromDBEnemy, EnemyRegen);
 	getline(ReadFromDBEnemy, EnemyDodgeChange);
+	getline(ReadFromDBEnemy, EnemyLifesteal);
 	DBEnemy.close();
 
-	// Read only after =
-	EnemyNickname.erase(0, 17);
-	EnemyHealth.erase(0, 15);
-	EnemyMight.erase(0, 14);
-	EnemyDefence.erase(0, 16);
-	EnemyCritChance.erase(0, 19);
-	EnemyCritBonus.erase(0, 18);
-	EnemyRegen.erase(0, 14);
-	EnemyDodgeChange.erase(0, 20);
+	// read only after =
+	EnemyNickname.erase(0, 11);
+	EnemyHealth.erase(0, 9);
+	EnemyMight.erase(0, 8);
+	EnemyDefence.erase(0, 10);
+	EnemyCritChance.erase(0, 13);
+	EnemyCritBonus.erase(0, 12);
+	EnemyRegen.erase(0, 8);
+	EnemyDodgeChange.erase(0, 14);
+	EnemyLifesteal.erase(0, 12);
 
-	// Setting stats from DBPlayer to Enemy.Stats
+	// setting stats from DBPlayer to Enemy.Stats
 	Enemy.Nickname = EnemyNickname;
 	istringstream(EnemyHealth) >> Enemy.Health;
 	istringstream(EnemyMight) >> Enemy.Might;
@@ -50,41 +48,9 @@ void SetupEnemy()
 	istringstream(EnemyCritBonus) >> Enemy.CritBonus;
 	istringstream(EnemyRegen) >> Enemy.Regen;
 	istringstream(EnemyDodgeChange) >> Enemy.DodgeChange;
+	istringstream(EnemyLifesteal) >> Enemy.Lifesteal;
 
-	if(Enemy.Health == 0)
-	{
-		Enemy.Health = 100;
-	}
-
-	if(Enemy.Might == 0)
-	{
-		Enemy.Might = 10;
-	}
-
-	if(Enemy.Defence == 0)
-	{
-		Enemy.Defence = 1;
-	}
-
-	if(Enemy.Defence > 70)
-	{
-		Enemy.Defence = 70;
-	}
-
-	if(Enemy.CritChance == 0)
-	{
-		Enemy.CritChance = 1;
-	}
-
-	if(Enemy.CritBonus == 0)
-	{
-		Enemy.CritBonus = 1;
-	}
-
-	if(Enemy.Regen == 0)
-	{
-		Enemy.Regen = 5;
-	}
+	CheckOnEmpty("Enemy");
 }
 
-#endif
+#endif // _SETUPENEMY_H_

@@ -1,55 +1,40 @@
-#pragma once
-
-#ifndef _DisplaySleep_H_
-#define _DisplaySleep_H_
+#ifndef _DISPLAYSLEEP_H_
+#define _DISPLAYSLEEP_H_
 
 void DisplaySleep()
 {
-	// Getting SetBattleSpeed from Run
-	std::string SetBattleSpeed;
+	// getting SetBattleSpeed from Run
+	string SetBattleSpeed;
 
-	// Reading SetBattleSpeed from Run
+	// reading SetBattleSpeed from Run
 	std::ofstream Run;
 	std::ifstream ReadFromRun("Run.txt");
 	std::getline(ReadFromRun, SetBattleSpeed);
 	Run.close();
 
-	// Read only after =
+	// read only after =
 	SetBattleSpeed.erase(0, 14);
 
-	// Setting battle speed
-	if(SetBattleSpeed == "fast")
+	// setting battle speed
+	if(SetBattleSpeed == "turbo")
 	{
 		Sleep(0);
 	}
 
+	if(SetBattleSpeed == "fast")
+	{
+		Sleep(150);
+	}
+
 	if(SetBattleSpeed == "normal")
 	{
-		Sleep(500);
+		Sleep(300);
 	}
-	
+
 	if(SetBattleSpeed == "slow")
 	{
-		Sleep(1000);
+		Sleep(600);
 	}
 }
 
-void SetConsoleColor(std::string ColorName)
-{
-	if(ColorName == "Red")
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4);
-	}
-
-	if(ColorName == "Green")
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 2);
-	}
-
-	if(ColorName == "Black")
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-	}
-}
-
-#endif
+#endif // _DISPLAYSLEEP_H_

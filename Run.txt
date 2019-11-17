@@ -1,4 +1,5 @@
-BattleSpeed = normal
-ShowFullLog = false
-SaveBattleLog = false
-LogFileName = BattleLog
+BattleSpeed = turbo
+ShowFullLog = true
+SaveBattleLog = true
+LogFileName = LOGFILE
+

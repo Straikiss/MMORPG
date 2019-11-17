@@ -1,14 +1,8 @@
-#pragma once
-
-#ifndef _SetupPlayer_H_
-#define _SetupPlayer_H_
-
-using std::string;
-using std::istringstream;
+#ifndef _SETUPPLAYER_H_
+#define _SETUPPLAYER_H_
 
 void SetupPlayer()
 {
-	// Getting Player.Stats from DBPlayer
 	string PlayerNickname;
 	string PlayerHealth;
 	string PlayerMight;
@@ -17,11 +11,12 @@ void SetupPlayer()
 	string PlayerCritBonus;
 	string PlayerRegen;
 	string PlayerDodgeChange;
+	string PlayerLifesteal;
 
-	// Reading Player.Stats from DBPlayer
+	// reading Player.Stats from DBPlayer
 	std::ofstream DBPlayer;
-	std::ifstream ReadFromDBPlayer("DBPlayer.txt");
-	std::getline(ReadFromDBPlayer, PlayerNickname);
+	std::ifstream ReadFromDBPlayer("Player.txt");
+	getline(ReadFromDBPlayer, PlayerNickname);
 	getline(ReadFromDBPlayer, PlayerHealth);
 	getline(ReadFromDBPlayer, PlayerMight);
 	getline(ReadFromDBPlayer, PlayerDefence);
@@ -29,19 +24,21 @@ void SetupPlayer()
 	getline(ReadFromDBPlayer, PlayerCritBonus);
 	getline(ReadFromDBPlayer, PlayerRegen);
 	getline(ReadFromDBPlayer, PlayerDodgeChange);
+	getline(ReadFromDBPlayer, PlayerLifesteal);
 	DBPlayer.close();
 
-	// Read only after =
-	PlayerNickname.erase(0, 18);
-	PlayerHealth.erase(0, 16);
-	PlayerMight.erase(0, 15);
-	PlayerDefence.erase(0, 17);
-	PlayerCritChance.erase(0, 20);
-	PlayerCritBonus.erase(0, 19);
-	PlayerRegen.erase(0, 15);
-	PlayerDodgeChange.erase(0, 21);
+	// read only after =
+	PlayerNickname.erase(0, 11);
+	PlayerHealth.erase(0, 9);
+	PlayerMight.erase(0, 8);
+	PlayerDefence.erase(0, 10);
+	PlayerCritChance.erase(0, 13);
+	PlayerCritBonus.erase(0, 12);
+	PlayerRegen.erase(0, 8);
+	PlayerDodgeChange.erase(0, 14);
+	PlayerLifesteal.erase(0, 12);
 
-	// Setting stats from DBPlayer to Player.Stats
+	// setting stats from DBPlayer to Player.Stats
 	Player.Nickname = PlayerNickname;
 	istringstream(PlayerHealth) >> Player.Health;
 	istringstream(PlayerMight) >> Player.Might;
@@ -50,41 +47,9 @@ void SetupPlayer()
 	istringstream(PlayerCritBonus) >> Player.CritBonus;
 	istringstream(PlayerRegen) >> Player.Regen;
 	istringstream(PlayerDodgeChange) >> Player.DodgeChange;
+	istringstream(PlayerLifesteal) >> Player.Lifesteal;
 
-	if(Player.Health == 0)
-	{
-		Player.Health = 100;
-	}
-
-	if(Player.Might == 0)
-	{
-		Player.Might = 10;
-	}
-
-	if(Player.Defence == 0)
-	{
-		Player.Defence = 1;
-	}
-
-	if(Player.Defence > 70)
-	{
-		Player.Defence = 70;
-	}
-
-	if(Player.CritChance == 0)
-	{
-		Player.CritChance = 1;
-	}
-
-	if(Player.CritBonus == 0)
-	{
-		Player.CritBonus = 1;
-	}
-
-	if(Player.Regen == 0)
-	{
-		Player.Regen = 5;
-	}
+	CheckOnEmpty("Player");
 }
 
-#endif
+#endif // _SETUPPLAYER_H_
