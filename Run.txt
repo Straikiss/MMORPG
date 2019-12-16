@@ -1,5 +1,0 @@
-BattleSpeed = turbo
-ShowFullLog = true
-SaveBattleLog = true
-LogFileName = LOGFILE
-
