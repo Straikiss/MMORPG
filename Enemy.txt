@@ -1,8 +1,0 @@
-Nickname = Straikiss
-Health = 3000
-Might = 200
-Defence = 250
-CritChance = 4
-CritBonus = 2
-Regen = 15
-DodgeChange = 10
