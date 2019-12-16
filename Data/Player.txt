@@ -1,0 +1,9 @@
+Nickname = Hesoid
+Health = 3000
+Might = 200
+Defence = 25
+CritChance = 2
+CritBonus = 2
+Regen = 10
+DodgeChange = 5
+Lifesteal = 20
