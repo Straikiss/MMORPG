@@ -1,0 +1,6 @@
+BattleSpeed = turbo
+ShowFullLog = true
+SaveBattleLog = false
+LogFileName = LOGFILE
+LogErrors = true
+Language = en
